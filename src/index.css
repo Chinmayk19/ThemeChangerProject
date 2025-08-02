@@ -1,0 +1,73 @@
+/* Base theme (Theme1) */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f8f9fa;
+  color: #212529;
+  transition: background .3s ease, color .3s ease, font-family .3s ease;
+}
+
+/* Theme2: dark + sidebar + serif */
+body[data-theme='theme2'] {
+  background: #1f2230;
+  color: #f0f5ff;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Theme2 cards */
+body[data-theme='theme2'] .card {
+  background: #2a2e45;
+  border: none;
+  color: #f0f5ff;
+}
+
+/* Theme2 header link styling override */
+body[data-theme='theme2'] .nav-link {
+  color: #f0f5ff !important;
+}
+body[data-theme='theme2'] .navbar-brand {
+  color: #f0f5ff !important;
+}
+
+/* Theme3: colorful cards, playful font */
+body[data-theme='theme3'] {
+  background: #fff8f3;
+  font-family: 'Pacifico', cursive;
+  color: #2d1b3f;
+}
+
+/* Theme3 card style */
+body[data-theme='theme3'] .card {
+  background: #ffe4e1;
+  border-radius: 1rem;
+}
+
+/* Theme transition wrapper */
+.theme-transition {
+  transition: all .35s ease;
+}
+
+/* Card hover lift */
+.card {
+  transition: transform .25s ease, background .3s ease, color .3s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+}
+
+/* Header fixed spacing adjustment for small viewports */
+body {
+  padding-top: 56px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 992px) {
+  body[data-theme='theme2'] aside {
+    position: relative;
+    width: 100%;
+  }
+}
+@media (min-width: 992px) {
+  .with-sidebar {
+    margin-left: 260px; /* same as SIDEBAR_WIDTH */
+  }
+}
