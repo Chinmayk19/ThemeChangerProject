@@ -2,7 +2,7 @@ import React from 'react';
 import useFetchProducts from '../hooks/useFetchProducts';
 import SidebarLayout from '../components/SidebarLayout';
 import Footer from '../components/Footer';
-import LazyProductCard from '../components/LazyProductCard'; // import the lazy version
+import LazyProductCard from '../components/LazyProductCard'; 
 
 const Home = () => {
   const { data, loading, error } = useFetchProducts();

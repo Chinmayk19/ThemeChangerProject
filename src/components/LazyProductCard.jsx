@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
+import  { useEffect, useRef, useState, lazy, Suspense } from 'react';
 
 const ProductCard = lazy(() => import('./ProductCard'));
 
