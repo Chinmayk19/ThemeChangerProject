@@ -1,37 +1,48 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { Link } from "react-router-dom";
 
+const themeOptions = [
+  { value: "theme1", label: "Theme 1" },
+  { value: "theme2", label: "Theme 2" },
+  { value: "theme3", label: "Theme 3" },
+];
+
 const Header = () => {
   const { theme, setTheme } = useContext(ThemeContext);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // mobile menu
+  const [dropdownOpenDesktop, setDropdownOpenDesktop] = useState(false);
+  const [dropdownOpenMobile, setDropdownOpenMobile] = useState(false);
+  const desktopRef = useRef(null);
+  const mobileDropdownRef = useRef(null);
 
-  // close mobile menu on navigation
+  const current = themeOptions.find((t) => t.value === theme) || themeOptions[0];
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (desktopRef.current && !desktopRef.current.contains(e.target)) {
+        setDropdownOpenDesktop(false);
+      }
+      if (mobileDropdownRef.current && !mobileDropdownRef.current.contains(e.target)) {
+        setDropdownOpenMobile(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   const handleNavClick = () => setOpen(false);
 
   return (
     <>
-      <nav
-        className="navbar fixed-top shadow-sm"
-        style={{
-          background:
-            theme === "theme2"
-              ? "#1f2230"
-              : theme === "theme3"
-              ? "#fff8f3"
-              : "#f8f9fa",
-          color: theme === "theme2" ? "#f0f5ff" : "#212529",
-          transition: "all .3s ease",
-          padding:0,
-          zIndex: 50,
-        }}
-      >
-        <div className="d-flex align-items-center justify-content-between w-100" style={{padding:"10px"}}>
+      <nav className="custom-navbar fixed-top shadow-sm">
+        <div className="d-flex align-items-center justify-content-between w-100 navbar-inner">
           <div className="d-flex align-items-center gap-3">
             <span className="navbar-brand fw-bold mb-0">ThemeApp</span>
           </div>
 
-          {/* desktop links */}
+          {/* Desktop Links */}
           <div className="d-none d-lg-flex align-items-center gap-3">
             <Link to="/" className="nav-link" onClick={handleNavClick}>
               Home
@@ -42,78 +53,103 @@ const Header = () => {
             <Link to="/contact" className="nav-link" onClick={handleNavClick}>
               Contact
             </Link>
-            <select
-              className="form-select form-select-sm"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              style={{ width: "140px" }}
-            >
-              <option value="theme1">Theme 1</option>
-              <option value="theme2">Theme 2</option>
-              <option value="theme3">Theme 3</option>
-            </select>
+
+            {/* Desktop Dropdown */}
+            <div ref={desktopRef} className="dropdown-wrapper">
+              <div
+                className="dropdown-trigger"
+                onClick={() => setDropdownOpenDesktop((o) => !o)}
+              >
+                <span>{current.label}</span>
+                <span
+                  className={`dropdown-arrow ${dropdownOpenDesktop ? "open" : ""}`}
+                >
+                  ▾
+                </span>
+              </div>
+              {dropdownOpenDesktop && (
+                <div className="dropdown-panel">
+                  {themeOptions.map((opt) => (
+                    <div
+                      key={opt.value}
+                      onClick={() => {
+                        setTheme(opt.value);
+                        setDropdownOpenDesktop(false);
+                      }}
+                      className={`dropdown-option ${
+                        theme === opt.value ? "selected" : ""
+                      }`}
+                    >
+                      <p className="option-label">{opt.label}</p>
+                      {theme === opt.value && <span className="checkmark">✓</span>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* hamburger for mobile */}
+          {/* Mobile Hamburger */}
           <button
-            className="btn d-lg-none"
+            className="btn d-lg-none hamburger-btn"
             onClick={() => setOpen((o) => !o)}
             aria-label="Toggle menu"
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              color: theme === "theme2" ? "#f0f5ff" : "#212529",
-            }}
           >
             {open ? "✕" : "☰"}
           </button>
         </div>
       </nav>
 
-      {/* mobile dropdown menu */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          paddingTop:0,
-          background:
-            theme === "theme2"
-              ? "#1f2230"
-              : theme === "theme3"
-              ? "#fff8f3"
-              : "#f8f9fa",
-          color: theme === "theme2" ? "#f0f5ff" : "#212529",
-          transition: "max-height .3s ease",
-          overflow: "hidden",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-          maxHeight: open ? "300px" : "0",
-          zIndex: 40,
-        }}
-      >
-        <div className="d-flex flex-column align-items-start p-3 gap-2">
-          <Link to="/" className="nav-link p-0" onClick={handleNavClick}>
+      {/* Mobile Menu */}
+      <div className={`mobile-menu ${open ? "open" : ""}`}>
+        <div className="mobile-links">
+          <Link to="/" className="nav-link" onClick={handleNavClick}>
             Home
           </Link>
-          <Link to="/about" className="nav-link p-0" onClick={handleNavClick}>
+          <Link to="/about" className="nav-link" onClick={handleNavClick}>
             About
           </Link>
-          <Link to="/contact" className="nav-link p-0" onClick={handleNavClick}>
+          <Link to="/contact" className="nav-link" onClick={handleNavClick}>
             Contact
           </Link>
-          <div className="w-100 mt-2">
-            <label className="form-label small mb-1">Theme</label>
-            <select
-              className="form-select"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
+
+          {/* Mobile Dropdown */}
+          <div
+            className="mobile-dropdown-wrapper"
+            ref={mobileDropdownRef}
+          >
+            <label className="form-label small mb-1 mobile-dropdown-label">Theme</label>
+            <div
+              className="dropdown-trigger"
+              onClick={() => setDropdownOpenMobile((o) => !o)}
             >
-              <option value="theme1">Theme 1</option>
-              <option value="theme2">Theme 2</option>
-              <option value="theme3">Theme 3</option>
-            </select>
+              <span>{current.label}</span>
+              <span
+                className={`dropdown-arrow ${dropdownOpenMobile ? "open" : ""}`}
+              >
+                ▾
+              </span>
+            </div>
+            {dropdownOpenMobile && (
+              <div className="dropdown-panel">
+                {themeOptions.map((opt) => (
+                  <div
+                    key={opt.value}
+                    onClick={() => {
+                      setTheme(opt.value);
+                      setDropdownOpenMobile(false);
+                      setOpen(false);
+                    }}
+                    className={`dropdown-option ${
+                      theme === opt.value ? "selected" : ""
+                    }`}
+                  >
+                    <p className="option-label">{opt.label}</p>
+                    {theme === opt.value && <span className="checkmark">✓</span>}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
