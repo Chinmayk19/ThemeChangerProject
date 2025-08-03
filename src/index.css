@@ -339,3 +339,28 @@ body[data-theme='theme3'] .hamburger-btn {
 .navbar-mobile-menu.open {
   max-height: 360px;
 }
+
+
+.product-card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-description {
+  flex-grow: 1;
+}
+
+.product-image-wrapper {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.product-image {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}

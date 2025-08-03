@@ -1,8 +1,8 @@
 import React from 'react';
 import useFetchProducts from '../hooks/useFetchProducts';
-import ProductCard from '../components/ProductCard';
 import SidebarLayout from '../components/SidebarLayout';
 import Footer from '../components/Footer';
+import LazyProductCard from '../components/LazyProductCard'; // import the lazy version
 
 const Home = () => {
   const { data, loading, error } = useFetchProducts();
@@ -28,7 +28,7 @@ const Home = () => {
           !error &&
           data.slice(0, 6).map((prod) => (
             <div className="col" key={prod.id}>
-              <ProductCard
+              <LazyProductCard
                 title={prod.title}
                 description={prod.description}
                 image={prod.image}
@@ -38,7 +38,8 @@ const Home = () => {
             </div>
           ))}
       </div>
-      <Footer/>
+
+      <Footer />
     </SidebarLayout>
   );
 };
